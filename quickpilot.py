@@ -1,2 +1,6 @@
+import quickpilot_main
+
 if __name__ == "__main__":
-    print("Hello World")
+    x = quickpilot_main.QuickPilot()
+    x.set_command()
+    x.run_command()
