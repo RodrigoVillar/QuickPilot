@@ -8,12 +8,11 @@ class Weather:
     def __init__(self):
         self.set_city()
     
+
     def run(self):
         while True:
+            self.weather_instructions()
             while True:
-                print("Welcome to the Weather Section of QuickPilot!")
-                print("The following commands are available for the weather: 'all' - returns all available weather data, 'temp' - returns the temperature, 'humidity' - returns the humidity.")
-                print("Additionally, you can enter 'back' return to the main menu")
 
                 y = self.weather_json["main"]
 
@@ -23,7 +22,7 @@ class Weather:
                     result = y["temp"]
                     conversion = self.kelv_to_fahr(result)
                     print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
-                    break
+                    self.continue_instructions()
                 elif x == 'all':
                     result_temp = y["temp"]
                     conversion_temp = self.kelv_to_fahr(result_temp)
@@ -32,19 +31,30 @@ class Weather:
                     print("The current temperature in your area is " + str(round(conversion_temp, 2)) + \
                         " degrees fahreinheit, although it feels like it is " + str(round(conversion_feels, 2)) + " degrees outside.")
                     print("The current humidity is " + str(y['humidity']) + "%.")
-                    break
+                    self.continue_instructions()
                 elif x == 'humidity':
                     print("The current humidity is " + str(y['humidity']) + "%.")
-                    break
+                    self.continue_instructions()
                 elif x == 'back':
                     return
                 else:
                     print("Please enter a valid command!")
-                    continue
+                    
+
+    def weather_instructions(self):
+        print("Welcome to the Weather Section of QuickPilot!")
+        print("The following commands are available for the weather: 'all' - returns all available weather data, 'temp' - returns the temperature, 'humidity' - returns the humidity.")
+        print("Additionally, you can enter 'back' return to the main menu")
+    
+    
+    def continue_instructions(self):
+        print("You can continue with any weather command or you can enter 'back' to return to the main menu!")
+
 
     def set_city(self):
         temp = input("Please type in a city name or valid zip code: ")
         self.get_weather_json(temp) # This gets the weather JSON we need
+
 
     def get_weather_json(self, city_name):
 
@@ -70,6 +80,9 @@ class Airport:
         self.airport_json_helper()
         self.set_airport_name()
         self.airport_action()
+
+    def run(self):
+        print("airport, run!")
 
 
     def set_airport_name(self):
