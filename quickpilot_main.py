@@ -86,11 +86,10 @@ class Airport:
     
     airport_json = None
 
-
     def __init__(self):
         self.airport_json_helper()
         self.set_airport_name()
-        print("initialized airport object")
+        self.airport_action()
 
 
     def set_airport_name(self):
@@ -102,15 +101,33 @@ class Airport:
             else:
                 self.airport_name = temp
                 break
-        print("airport name set")
 
 
     def airport_action(self):
-        print("The following commands are available")
+        print("The following commands are available: 'basic' or 'advanced'.")
+        while True: 
+            temp = input("Please type in a valid command: ")
+            if temp == 'basic':
+                self.airport_basic_action()
+                break
+            elif temp == 'advanced':
+                self.airport_advanced_action()
+                break
+            else:
+                print("The command your entered is not valid!")
+                continue
+
 
     def airport_json_helper(self):
         file = open('data/airports.json')
         fileData = file.read()
         self.airport_json = json.loads(fileData)
         file.close
+
+    def airport_basic_action(self):
+        toma = self.airport_json[self.airport_name]
+        print("Your airport name is " + toma['name'] + ", which is located in " + toma["city"] + ", " + toma['state'] + ", " + toma["country"] + ".")
+
+    def airport_advanced_action(self):
+        print("advanced command!")
         
