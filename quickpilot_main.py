@@ -2,7 +2,7 @@ import json, requests
 
 class QuickPilot:
 
-    allowed_commands = ('weather', 'airport')
+    allowed_commands = ('weather', 'airport', 'break')
 
     command = ""
 
@@ -21,24 +21,27 @@ class QuickPilot:
 From Here, you can take the following actions: \n\n \
     'weather' : find out the weather in your area\n \
     'airport' : get information about a specific airport.\n\n\
-Additionally, you can use Control+C to exit out of this program at any time.")
+Additionally, you can use Control+C or 'break' to exit out of this program at any time.")
     # LATER: use library to make this text look cleaner/more professional
 
     def set_command(self):
-        while True:
-            var = input()
-            if var not in self.allowed_commands:
-                print("Please input a valid command: ")
-                continue
-            else:
-                self.command = var
-                break
+        while True: # Makes it so that program doesn't end when the final command is inputted
+            while True:
+                var = input()
+                if var not in self.allowed_commands:
+                    print("Please input a valid command: ")
+                    continue
+                else:
+                    if var == 'break':
+                        quit()
+                    self.command = var
+                    self.run_command()
+                    break
     
 
     def run_command(self):
         if self.command == "weather":
             self.weather_obj = Weather()
-            self.weather_obj.set_city()
             self.weather_obj.actions()
 
         elif self.command == "airport":
@@ -51,10 +54,10 @@ class Weather:
     weather_json = None
 
     def __init__(self):
-        print("initialized a weather object")
+        self.set_city()
 
     def set_city(self):
-        temp = input("Please type in a city name: ")
+        temp = input("Please type in a city name or valid zip code: ")
         self.get_weather_json(temp) # This gets the weather JSON we need
 
     def get_weather_json(self, city_name):
@@ -66,14 +69,36 @@ class Weather:
         self.weather_json = response.json()
 
     def actions(self):
-        print("Enter the command 'temp' to see the current temperature for your area")
-        x = input("Input command here: ")
+        print("The following commands are available for the weather: 'all' - returns all available weather data, 'temp' - returns the temperature, 'humidity' - returns the humidity.")
+        print("Additionally, you can enter 'back' return to the main menu")
+        y = self.weather_json["main"]
+        while True:
 
-        if x == "temp":
-            y = self.weather_json["main"]
-            result = y["temp"]
-            conversion = self.kelv_to_fahr(result)
-            print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
+            x = input("Input command here: ")
+
+            if x == "temp":
+                result = y["temp"]
+                conversion = self.kelv_to_fahr(result)
+                print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
+                break
+            elif x == 'all':
+                result_temp = y["temp"]
+                conversion_temp = self.kelv_to_fahr(result_temp)
+                result_feels = y['feels_like']
+                conversion_feels = self.kelv_to_fahr(result_feels)
+                print("The current temperature in your area is " + str(round(conversion_temp, 2)) + \
+                    " degrees fahreinheit, although it feels like it is " + str(round(conversion_feels, 2)) + " degrees outside.")
+                print("The current humidity is " + str(y['humidity']) + "%.")
+                break
+            elif x == 'humidity':
+                print("The current humidity is " + str(y['humidity']) + "%.")
+                break
+            elif x == 'back':
+                break
+            else:
+                print("Please enter a valid command!")
+                continue
+        
     
     def kelv_to_fahr(self, value):
         temp = 9 * (value - 273)
