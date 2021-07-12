@@ -1,52 +1,4 @@
 import json, requests
-
-class QuickPilot:
-
-    allowed_commands = ('weather', 'airport', 'break')
-
-    command = ""
-
-    weather_obj = None
-
-    airport_obj = None
-
-    def __init__(self):
-        self.user_instructions()
-
-    def user_instructions(self):
-        """
-        Prints out actions user can take once the program has been initialized
-        """
-        print("Welcome to QuickPilot!\n\n\
-From Here, you can take the following actions: \n\n \
-    'weather' : find out the weather in your area\n \
-    'airport' : get information about a specific airport.\n\n\
-Additionally, you can use Control+C or 'break' to exit out of this program at any time.")
-    # LATER: use library to make this text look cleaner/more professional
-
-    def set_command(self):
-        while True: # Makes it so that program doesn't end when the final command is inputted
-            while True:
-                var = input()
-                if var not in self.allowed_commands:
-                    print("Please input a valid command: ")
-                    continue
-                else:
-                    if var == 'break':
-                        quit()
-                    self.command = var
-                    self.run_command()
-                    break
-    
-
-    def run_command(self):
-        if self.command == "weather":
-            self.weather_obj = Weather()
-            self.weather_obj.actions()
-
-        elif self.command == "airport":
-            self.airport_obj = Airport()
-
 class Weather:
 
     city = ""
@@ -55,6 +7,40 @@ class Weather:
 
     def __init__(self):
         self.set_city()
+    
+    def run(self):
+        while True:
+            while True:
+                print("Welcome to the Weather Section of QuickPilot!")
+                print("The following commands are available for the weather: 'all' - returns all available weather data, 'temp' - returns the temperature, 'humidity' - returns the humidity.")
+                print("Additionally, you can enter 'back' return to the main menu")
+
+                y = self.weather_json["main"]
+
+                x = input("Input command here: ")
+
+                if x == "temp":
+                    result = y["temp"]
+                    conversion = self.kelv_to_fahr(result)
+                    print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
+                    break
+                elif x == 'all':
+                    result_temp = y["temp"]
+                    conversion_temp = self.kelv_to_fahr(result_temp)
+                    result_feels = y['feels_like']
+                    conversion_feels = self.kelv_to_fahr(result_feels)
+                    print("The current temperature in your area is " + str(round(conversion_temp, 2)) + \
+                        " degrees fahreinheit, although it feels like it is " + str(round(conversion_feels, 2)) + " degrees outside.")
+                    print("The current humidity is " + str(y['humidity']) + "%.")
+                    break
+                elif x == 'humidity':
+                    print("The current humidity is " + str(y['humidity']) + "%.")
+                    break
+                elif x == 'back':
+                    return
+                else:
+                    print("Please enter a valid command!")
+                    continue
 
     def set_city(self):
         temp = input("Please type in a city name or valid zip code: ")
@@ -67,38 +53,7 @@ class Weather:
         complete_url = base_url + "appid=" + api_key + "&q=" + city_name
         response = requests.get(complete_url)
         self.weather_json = response.json()
-
-    def actions(self):
-        print("The following commands are available for the weather: 'all' - returns all available weather data, 'temp' - returns the temperature, 'humidity' - returns the humidity.")
-        print("Additionally, you can enter 'back' return to the main menu")
-        y = self.weather_json["main"]
-        while True:
-
-            x = input("Input command here: ")
-
-            if x == "temp":
-                result = y["temp"]
-                conversion = self.kelv_to_fahr(result)
-                print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
-                break
-            elif x == 'all':
-                result_temp = y["temp"]
-                conversion_temp = self.kelv_to_fahr(result_temp)
-                result_feels = y['feels_like']
-                conversion_feels = self.kelv_to_fahr(result_feels)
-                print("The current temperature in your area is " + str(round(conversion_temp, 2)) + \
-                    " degrees fahreinheit, although it feels like it is " + str(round(conversion_feels, 2)) + " degrees outside.")
-                print("The current humidity is " + str(y['humidity']) + "%.")
-                break
-            elif x == 'humidity':
-                print("The current humidity is " + str(y['humidity']) + "%.")
-                break
-            elif x == 'back':
-                break
-            else:
-                print("Please enter a valid command!")
-                continue
-        
+    
     
     def kelv_to_fahr(self, value):
         temp = 9 * (value - 273)
