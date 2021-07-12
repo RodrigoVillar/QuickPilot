@@ -1,8 +1,14 @@
+import json, requests
+
 class QuickPilot:
 
     allowed_commands = ('weather', 'airport')
 
     command = ""
+
+    weather_obj = None
+
+    airport_obj = None
 
     def __init__(self):
         self.user_instructions()
@@ -27,13 +33,84 @@ Additionally, you can use Control+C to exit out of this program at any time.")
             else:
                 self.command = var
                 break
-        
-        print("self.command is equal to: " + self.command)
+    
 
     def run_command(self):
         if self.command == "weather":
-            print("weather it is!")
-        elif self.command == "airport":
-            print("airport it is")
+            self.weather_obj = Weather()
+            self.weather_obj.set_city()
+            self.weather_obj.actions()
 
+        elif self.command == "airport":
+            self.airport_obj = Airport()
+
+class Weather:
+
+    city = ""
+
+    weather_json = None
+
+    def __init__(self):
+        print("initialized a weather object")
+
+    def set_city(self):
+        temp = input("Please type in a city name: ")
+        self.get_weather_json(temp) # This gets the weather JSON we need
+
+    def get_weather_json(self, city_name):
+
+        api_key = "***REMOVED***"
+        base_url = "http://api.openweathermap.org/data/2.5/weather?"
+        complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+        response = requests.get(complete_url)
+        self.weather_json = response.json()
+
+    def actions(self):
+        print("Enter the command 'temp' to see the current temperature for your area")
+        x = input("Input command here: ")
+
+        if x == "temp":
+            y = self.weather_json["main"]
+            result = y["temp"]
+            conversion = self.kelv_to_fahr(result)
+            print("The current temperature in your area is " + str(round(conversion, 2)) + " degrees fahreinheit!")
+    
+    def kelv_to_fahr(self, value):
+        temp = 9 * (value - 273)
+        result = (temp / 5) + 32
+        return result
+
+class Airport:
+
+    airport_name = ""
+    
+    airport_json = None
+
+
+    def __init__(self):
+        self.airport_json_helper()
+        self.set_airport_name()
+        print("initialized airport object")
+
+
+    def set_airport_name(self):
+        while True:
+            temp = input("Please type in the ICAO code of an airport: ")
+            if temp not in self.airport_json:
+                print("Please input a valid ICAO airport code: ")
+                continue
+            else:
+                self.airport_name = temp
+                break
+        print("airport name set")
+
+
+    def airport_action(self):
+        print("The following commands are available")
+
+    def airport_json_helper(self):
+        file = open('data/airports.json')
+        fileData = file.read()
+        self.airport_json = json.loads(fileData)
+        file.close
         
