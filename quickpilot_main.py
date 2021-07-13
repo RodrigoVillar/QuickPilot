@@ -80,7 +80,6 @@ class Airport:
 
     def __init__(self):
         self.airport_json_helper()
-        print(self.airport_json["KEWR"])
         self.set_airport_name()
 
     def run(self):
@@ -96,7 +95,10 @@ class Airport:
                 elif x == 'back':
                     return
                 elif x == 'elevation':
-                    print(self.chosen_airport_json['elevation'])
+                    print("Your airport has an elevation of " + self.chosen_airport_json['elevation'] + " feet!")
+                    self.continue_instructions()
+                elif x == 'coordinates':
+                    print("Your airport has the coordinates of " + self.chosen_airport_json['lat'] + ", " + self.chosen_airport_json['long'] + " (lon/lat)")
                     self.continue_instructions()
                 elif x == 'show-commands':
                     self.show_commands()
@@ -105,14 +107,16 @@ class Airport:
 
 
     def airport_instructions(self):
-        print("Welcome to the Airport section of QuickPilot!")
+        print("\nWelcome to the Airport section of QuickPilot!\n")
         self.show_commands()
 
     def continue_instructions(self):
         print("You can continue with any airport command or you can enter 'back' to return to the main menu!")
 
     def show_commands(self):
-        print("The following commands are available for your airport: 'all' - returns all available airport data")
+        print("The following commands are available for your airport: 'all' - returns all available airport data, \
+'elevation' - returns the elevation of your airport, 'coordinates' - returns the coordinates (lon/lat) of your airport, \
+'back' - returns you to the main menu, 'show-commands' - displays all available commands")
 
     def set_airport_name(self):
         while True:
