@@ -41,7 +41,6 @@ From Here, you can take the following actions: \n\n \
     'airport' : get information about a specific airport.\n\n\
 Additionally, you can use Control+C or 'back' to exit out of this program at any time.")
     # LATER: use library to make this text look cleaner/more professional
-    #Test part 2
     
 if __name__ == "__main__":
     x = QuickPilot()

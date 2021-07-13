@@ -79,17 +79,36 @@ class Airport:
     def __init__(self):
         self.airport_json_helper()
         self.set_airport_name()
-        self.airport_action()
 
     def run(self):
-        print("airport, run!")
+        while True:
+            self.airport_instructions()
+            while True:
+
+                x = input("Input command here: ")
+
+                if x == 'all':
+                    self.airport_basic_action()
+                    self.continue_instructions()
+                elif x == 'back':
+                    return
+                else:
+                    print("Please enter a valid command!")
+
+
+    def airport_instructions(self):
+        print("Welcome to the Airport section of QuickPilot!")
+        print("The following commands are available for your airport: 'all' - returns all available airport data")
+
+    def continue_instructions(self):
+        print("You can continue with any airport command or you can enter 'back' to return to the main menu!")
 
 
     def set_airport_name(self):
         while True:
             temp = input("Please type in the ICAO code of an airport: ")
             if temp not in self.airport_json:
-                print("Please input a valid ICAO airport code: ")
+                print("Please input a valid ICAO airport code! ")
                 continue
             else:
                 self.airport_name = temp
