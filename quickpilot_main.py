@@ -1,4 +1,4 @@
-import json, requests
+import json, requests, config
 class Weather:
 
     city = ""
@@ -58,7 +58,7 @@ class Weather:
 
     def get_weather_json(self, city_name):
 
-        api_key = "***REMOVED***"
+        api_key = config.weather_api_key
         base_url = "http://api.openweathermap.org/data/2.5/weather?"
         complete_url = base_url + "appid=" + api_key + "&q=" + city_name
         response = requests.get(complete_url)
