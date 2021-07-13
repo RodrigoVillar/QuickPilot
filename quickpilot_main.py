@@ -76,8 +76,11 @@ class Airport:
     
     airport_json = None
 
+    chosen_airport_json = None
+
     def __init__(self):
         self.airport_json_helper()
+        print(self.airport_json["KEWR"])
         self.set_airport_name()
 
     def run(self):
@@ -92,17 +95,24 @@ class Airport:
                     self.continue_instructions()
                 elif x == 'back':
                     return
+                elif x == 'elevation':
+                    print(self.chosen_airport_json['elevation'])
+                    self.continue_instructions()
+                elif x == 'show-commands':
+                    self.show_commands()
                 else:
                     print("Please enter a valid command!")
 
 
     def airport_instructions(self):
         print("Welcome to the Airport section of QuickPilot!")
-        print("The following commands are available for your airport: 'all' - returns all available airport data")
+        self.show_commands()
 
     def continue_instructions(self):
         print("You can continue with any airport command or you can enter 'back' to return to the main menu!")
 
+    def show_commands(self):
+        print("The following commands are available for your airport: 'all' - returns all available airport data")
 
     def set_airport_name(self):
         while True:
@@ -112,6 +122,7 @@ class Airport:
                 continue
             else:
                 self.airport_name = temp
+                self.chosen_airport_json = self.airport_json[self.airport_name]
                 break
 
 
@@ -135,11 +146,4 @@ class Airport:
         fileData = file.read()
         self.airport_json = json.loads(fileData)
         file.close
-
-    def airport_basic_action(self):
-        toma = self.airport_json[self.airport_name]
-        print("Your airport name is " + toma['name'] + ", which is located in " + toma["city"] + ", " + toma['state'] + ", " + toma["country"] + ".")
-
-    def airport_advanced_action(self):
-        print("advanced command!")
         
